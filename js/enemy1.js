@@ -3,10 +3,11 @@ class Enemy1 {
         this.ctx = ctx
         this.enemy1Pos = {x: posX, y: posY}
         this.enemy1Size = {w: width, h: height}
-        this.enemy1Vel = {x: 20, y: 1}
+        this.enemy1Vel = {x: 5, y: 1}
         this.enemy1Physics = {gravity: .5}
         this.gameSize = gameSize
         this.enemy1Lives = 1
+        this.dead = false
         
         this.imageInstance = undefined
         

@@ -11,8 +11,18 @@ const shootingGame = {
     framesCounter: 0,
     lives: 20,
     score: 0,
+    turboScore: 0,
+    countDown: 15,
+    countDownCounter: 0,
     enemy1: [],
     enemy2: [],
+    turboMode: false,
+
+
+
+
+
+
     init() {
         this.setContext()
         this.setSize()
@@ -79,6 +89,7 @@ const shootingGame = {
             this.createEnemy2()
             this.loseLives()
             this.enemy1Score()
+            this.enemy2Score()
             this.gameOver()
             this.enemy1.forEach(elm => {
                 elm.move()
@@ -88,6 +99,30 @@ const shootingGame = {
                 elm.move()
                 elm.draw()
             })
+
+            if (this.score % 20 === 0 && this.score != 0) {
+                this.turboMode = true
+                this.score += 1
+            }
+
+            if (this.turboMode) {
+                this.countDownCounter++
+            }
+
+            if(this.countDownCounter % 375 === 0) {
+                this.turboMode = false
+                this.countDownCounter = 0
+                this.countDown = 15
+            }
+
+            if (this.countDownCounter % 25 === 0 && this.countDownCounter != 0) {
+                this.countDown -= 1
+            }
+
+            document.querySelector(".count-down span").innerHTML = this.countDown
+
+
+
             this.framesCounter++
         }, 40)
         
@@ -145,9 +180,22 @@ const shootingGame = {
 
     enemy1Score() {
         document.querySelector(".score span").innerHTML = this.score
-        if (this.enemy1.enemy1Lives === 0) {
-            this.score += 1
-        }
+        this.enemy1.forEach(elem => {
+            if (elem.enemy1Lives === 0) {
+                this.score += 1
+                elem.dead = true
+            }
+        })
+    },
+
+    enemy2Score() {
+        document.querySelector(".score span").innerHTML = this.score
+        this.enemy2.forEach(elem => {
+            if (elem.enemy2Lives === 0) {
+                this.score += 2
+                elem.dead = true
+            }
+        })
     },
 
     gameOver() {
@@ -166,7 +214,7 @@ const shootingGame = {
 
 
     clearEnemies() {
-        this.enemy1 = this.enemy1.filter(elm => elm.enemy1Pos.x <= this.gameSize.w  && elm.enemy1Lives > 0)
-        this.enemy2 = this.enemy2.filter(elm => elm.enemy2Pos.x <= this.gameSize.w  && elm.enemy2Lives > 0)
+        this.enemy1 = this.enemy1.filter(elm => elm.enemy1Pos.x <= this.gameSize.w  && !elm.dead)
+        this.enemy2 = this.enemy2.filter(elm => elm.enemy2Pos.x <= this.gameSize.w  && !elm.dead)
     }
 }

@@ -1,11 +1,13 @@
 * {
     padding: 0;
     margin: 0;
-    font-family: sans-serif;
 }
 
 body {
     background-color: black;
+    font-family: 'Press Start 2P', cursive;
+    background: linear-gradient(to left, #2980b9, #6dd5fa, #ffffff);
+
 }
 
 .hero {
@@ -13,13 +15,18 @@ body {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    margin-top: 15%;
-    background-color: gray;
-    padding: 100px;
+    margin-top: 5%;
+    background-image: url('../images/100-1004982_free-no-man-s-sky-wallpaper-in-no.jpeg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    padding: 200px;
+    box-shadow: 2px 2px 20px 1px black;
 }
 
 h1 {
     padding-bottom: 40px;
+    font-size: 2.8em;
+
 }
 
 .button {
@@ -27,4 +34,5 @@ h1 {
     text-decoration: none;
     padding: 20px;
     border-radius: 5px;
+    color: black
 }
