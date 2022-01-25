@@ -152,7 +152,7 @@ const shootingGame = {
 
     gameOver() {
         if (this.lives === 0) {
-            window.location.href = "menu.html"
+            window.location.href = "gameover.html"
         }
     },
 
