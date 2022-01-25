@@ -1,0 +1,28 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: sans-serif;
+    font-size: 1.3em;
+    color: white;
+}
+
+.menu {
+    background-color: blue;
+    padding: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.left-menu .lives {
+    padding-bottom: 30px;
+}
+
+.right-menu .score {
+    padding-bottom: 30px;
+    text-align: right;
+}
+

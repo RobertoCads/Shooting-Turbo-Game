@@ -1,0 +1,5 @@
+
+
+shootingGame.init()
+
+
