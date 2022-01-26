@@ -59,10 +59,6 @@ const shootingGame = {
             ))
             
         }
-        // this.enemy1.push(
-        //     new Enemy1(this.ctx, 0, 0, 50, 50, this.gameSize),
-        //     new Enemy1(this.ctx, 0, 60, 50, 50, this.gameSize)
-        // )
     },
 
     createEnemy2() {
@@ -78,10 +74,6 @@ const shootingGame = {
             ))
             
         }
-        // this.enemy2.push(
-        //     new Enemy2(this.ctx, 0, 20, 100, 100, this.gameSize),
-        //     new Enemy2(this.ctx, 0, 200, 100, 100, this.gameSize)
-        // )
     },
 
     drawAll() {
@@ -142,7 +134,7 @@ const shootingGame = {
                     
                 }
 
-                if (this.framesCounter % 100 === 0) {
+                if (this.framesCounter % 200 === 0) {
                     this.bonus.push(new Bonus(
                         this.ctx,
                         0,
@@ -173,8 +165,13 @@ const shootingGame = {
 
                 this.bonus.forEach(elem => {
                     if (elem.bonusLives <= 0) {
-                        this.enemy1Vel = {x: 4, y: 1}
-                        this.enemy2Vel = {x: 2, y: 1}
+                        this.enemy1.forEach(elem => {
+                            elem.enemy1Vel = {x: 4, y: 1}
+                        })
+
+                        this.enemy2.forEach(elem => {
+                            elem.enemy2Vel = {x: 2, y: 1}
+                        })
                         elem.dead = true
                     }
                 })
@@ -297,11 +294,6 @@ const shootingGame = {
         }
         
     },
-
-    totalScore() {
-        
-    },
-
     gameOver() { 
         document.querySelector(".total-score span").innerHTML = this.score + this.turboScore
 
@@ -324,6 +316,6 @@ const shootingGame = {
     clearEnemies() {
         this.enemy1 = this.enemy1.filter(elm => elm.enemy1Pos.x <= this.gameSize.w  && !elm.dead)
         this.enemy2 = this.enemy2.filter(elm => elm.enemy2Pos.x <= this.gameSize.w  && !elm.dead)
-        this.bonus = this.bonus.filter(elm => elm.bonusPos.x <= this.gameSize.w && !elm.dead)
+        this.bonus = this.bonus.filter(elm => elm.bonusPos.x <= this.gameSize.w && !elm.dead && this.turboMode)
     }
 }

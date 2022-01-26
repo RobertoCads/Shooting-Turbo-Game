@@ -3,14 +3,14 @@ class Bonus {
         this.ctx = ctx
         this.bonusPos = {x: posX, y: posY}
         this.bonusSize = {w: width, h: height}
-        this.bonusVel = {x: 5, y: 1}
+        this.bonusVel = {x: 15, y: 1}
         this.bonusPhysics = {gravity: .5}
         this.gameSize = gameSize
         this.bonusLives = 1
         this.dead = false
 
         this.imageInstance = undefined
-        
+
         this.init()
     }
 
