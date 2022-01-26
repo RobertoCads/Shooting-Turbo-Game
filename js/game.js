@@ -8,6 +8,7 @@ const shootingGame = {
     gameSize: {w: undefined, h: undefined},
     cursor: document.getElementById("mouse"),
     ctx: undefined,
+    background: undefined,
     framesCounter: 0,
     lives: 5,
     score: 0,
@@ -19,20 +20,18 @@ const shootingGame = {
     bonus: [],
     turboMode: false,
 
-
-
-
-
-
     init() {
         this.setContext()
         this.setSize()
+        this.createBackground()
         this.drawAll()
         this.takeCoor()
         // this.enemy1Score()
          
           
     },
+
+    // CONTEXT AND SIZE /////////////////////////////////////////
 
     setContext() {
         this.ctx = document.querySelector("#myCanvas").getContext("2d")
@@ -46,6 +45,14 @@ const shootingGame = {
         document.querySelector("#myCanvas").setAttribute("width", this.gameSize.w)
         document.querySelector("#myCanvas").setAttribute("height", this.gameSize.h)
     },
+
+    // BACKGROUND /////////////////////////////////////////
+
+    createBackground() {
+        this.background = new Background(this.ctx, this.gameSize.w, this.gameSize.h)
+    },
+
+    // ENEMIES /////////////////////////////////////////
 
     createEnemy1() {
         if (this.framesCounter % 60 === 0) {
@@ -76,9 +83,12 @@ const shootingGame = {
         }
     },
 
+    // DRAW ALL (INTERVAL) /////////////////////////////////////////
+
     drawAll() {
         setInterval(() => {
-            this.clearEnemy1()
+            this.clearAll()
+            this.background.draw()
             this.createEnemy1()
             this.createEnemy2()
             this.loseLives()
@@ -94,7 +104,7 @@ const shootingGame = {
             })
             this.enemy2.forEach(elm => {
                 elm.move()
-                elm.draw()
+                elm.draw(this.framesCounter)
             })
 
             this.bonus.forEach(elm => {
@@ -189,17 +199,18 @@ const shootingGame = {
 
             document.querySelector(".count-down span").innerHTML = this.countDown
 
-
-
             this.framesCounter++
         }, 40)
         
     },
 
-    clearEnemy1() {
+
+    clearAll() {
         this.ctx.clearRect(0, 0, this.gameSize.w, this.gameSize.h)
         this.clearEnemies()
     },
+
+    // COLLISION /////////////////////////////////////////
 
     takeCoor() {
         let coords = document.querySelector("#myCanvas")
@@ -242,6 +253,8 @@ const shootingGame = {
         document.addEventListener("mousemove", logKey)
     },
 
+    // KILL ENEMIES /////////////////////////////////////////
+
     loseLives() {
         document.querySelector(".lives span").innerHTML = this.lives
         if (this.enemy1.some(elem => {
@@ -266,6 +279,8 @@ const shootingGame = {
 
 
     },
+
+    // SCORE /////////////////////////////////////////
 
     enemy1Score() {
         document.querySelector(".score span").innerHTML = this.score
@@ -294,24 +309,16 @@ const shootingGame = {
         }
         
     },
+
+    // GAME OVER /////////////////////////////////////////
+
     gameOver() { 
         document.querySelector(".total-score span").innerHTML = this.score + this.turboScore
-
-
         document.querySelector(".game-div").style.display = "none"
         document.querySelector(".main").style.display = "flex"
-
-
     },
 
-    
-
-
-
-
-
-
-
+    // CLEAR ENEMIES /////////////////////////////////////////
 
     clearEnemies() {
         this.enemy1 = this.enemy1.filter(elm => elm.enemy1Pos.x <= this.gameSize.w  && !elm.dead)

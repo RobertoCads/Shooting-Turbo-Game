@@ -16,7 +16,7 @@ class Bonus {
 
     init() {
         this.imageInstance = new Image()
-        this.imageInstance.src = "images/road.png"
+        this.imageInstance.src = "images/sand.png"
     }
 
     draw() {
