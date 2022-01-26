@@ -75,8 +75,8 @@ const shootingGame = {
                 this.ctx,
                 0,
                 Math.random() * this.gameSize.h,
-                200,
-                200,
+                150,
+                150,
                 this.gameSize
             ))
             
@@ -100,7 +100,7 @@ const shootingGame = {
             
             this.enemy1.forEach(elm => {
                 elm.move()
-                elm.draw()
+                elm.draw(this.framesCounter)
             })
             this.enemy2.forEach(elm => {
                 elm.move()
@@ -137,8 +137,8 @@ const shootingGame = {
                         this.ctx,
                         0,
                         Math.random() * this.gameSize.h,
-                        200,
-                        200,
+                        150,
+                        150,
                         this.gameSize
                     ))
                     

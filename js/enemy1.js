@@ -17,11 +17,34 @@ class Enemy1 {
 
     init() {
         this.imageInstance = new Image()
-        this.imageInstance.src = "images/car.png"
+        this.imageInstance.src = "images/Bat.png"
+        this.imageInstance.frames = 4
+        this.imageInstance.framesIndex = 0
     }
 
-    draw() {
-        this.ctx.drawImage(this.imageInstance, this.enemy1Pos.x, this.enemy1Pos.y, this.enemy1Size.w, this.enemy1Size.h)
+    draw(framesCounter) {
+        this.ctx.drawImage(
+            this.imageInstance,
+            this.imageInstance.framesIndex * (this.imageInstance.width / this.imageInstance.frames),
+            0,
+            this.imageInstance.width / this.imageInstance.frames,
+            this.imageInstance.height,
+            this.enemy1Pos.x,
+            this.enemy1Pos.y,
+            this.enemy1Size.w,
+            this.enemy1Size.h 
+        )
+        this.animate(framesCounter)
+    }
+
+    animate(framesCounter) {
+        if (framesCounter % 4 === 0) {
+            this.imageInstance.framesIndex++
+        }
+
+        if (this.imageInstance.framesIndex >= this.imageInstance.frames) {
+            this.imageInstance.framesIndex = 0
+        }
     }
 
     move() {

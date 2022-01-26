@@ -17,7 +17,7 @@ class Enemy2 {
 
     init() {
         this.imageInstance = new Image()
-        this.imageInstance.src = "images/Bat.png"
+        this.imageInstance.src = "images/BigBat.png"
         this.imageInstance.frames = 4
         this.imageInstance.framesIndex = 0
     }
@@ -38,7 +38,7 @@ class Enemy2 {
     }
 
     animate(framesCounter) {
-        if (framesCounter % 4 === 0) {
+        if (framesCounter % 8 === 0) {
             this.imageInstance.framesIndex++
         }
 
