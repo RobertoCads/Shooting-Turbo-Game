@@ -9,13 +9,14 @@ const shootingGame = {
     cursor: document.getElementById("mouse"),
     ctx: undefined,
     framesCounter: 0,
-    lives: 20,
+    lives: 5,
     score: 0,
     turboScore: 0,
     countDown: 15,
     countDownCounter: 0,
     enemy1: [],
     enemy2: [],
+    bonus: [],
     turboMode: false,
 
 
@@ -28,7 +29,8 @@ const shootingGame = {
         this.setSize()
         this.drawAll()
         this.takeCoor()
-        // this.enemy1Score() 
+        // this.enemy1Score()
+         
           
     },
 
@@ -90,12 +92,20 @@ const shootingGame = {
             this.loseLives()
             this.enemy1Score()
             this.enemy2Score()
-            this.gameOver()
+            if (this.lives <= 0) {
+                this.gameOver()
+            }
+            
             this.enemy1.forEach(elm => {
                 elm.move()
                 elm.draw()
             })
             this.enemy2.forEach(elm => {
+                elm.move()
+                elm.draw()
+            })
+
+            this.bonus.forEach(elm => {
                 elm.move()
                 elm.draw()
             })
@@ -107,6 +117,67 @@ const shootingGame = {
 
             if (this.turboMode) {
                 this.countDownCounter++
+
+                if (this.framesCounter % 20 === 0) {
+                    this.enemy1.push(new Enemy1(
+                        this.ctx,
+                        0,
+                        Math.random() * this.gameSize.h,
+                        100,
+                        100,
+                        this.gameSize
+                    ))
+                    
+                }
+
+                if (this.framesCounter % 20 === 0) {
+                    this.enemy2.push(new Enemy2(
+                        this.ctx,
+                        0,
+                        Math.random() * this.gameSize.h,
+                        200,
+                        200,
+                        this.gameSize
+                    ))
+                    
+                }
+
+                if (this.framesCounter % 100 === 0) {
+                    this.bonus.push(new Bonus(
+                        this.ctx,
+                        0,
+                        Math.random() * this.gameSize.h,
+                        100,
+                        100,
+                        this.gameSize
+                    ))
+                    
+                }
+
+
+                document.querySelector(".turbo-score span").innerHTML = this.turboScore
+                this.enemy1.forEach(elem => {
+                    if (elem.enemy1Lives <= 0) {
+                        this.turboScore += 1
+                        elem.dead = true
+                            
+                    }
+                })
+
+                this.enemy2.forEach(elem => {
+                    if (elem.enemy2Lives <= 0) {
+                        this.turboScore += 2
+                        elem.dead = true
+                    }
+                })
+
+                this.bonus.forEach(elem => {
+                    if (elem.bonusLives <= 0) {
+                        this.enemy1Vel = {x: 4, y: 1}
+                        this.enemy2Vel = {x: 2, y: 1}
+                        elem.dead = true
+                    }
+                })
             }
 
             if(this.countDownCounter % 375 === 0) {
@@ -139,26 +210,39 @@ const shootingGame = {
         
 
         const logKey = (e) => {
-            coords.innerText = `Screen X/Y: ${e.screenX} ${e.screenY}`
-            this.enemy1.forEach(elem => {
-                if (elem.enemy1Pos.x < e.clientX &&
-                    elem.enemy1Pos.x + elem.enemy1Size.w > e.clientX &&
-                    elem.enemy1Pos.y < e.clientY &&
-                    elem.enemy1Size.h + elem.enemy1Pos.y > e.clientY) {
-                    elem.enemy1Lives--
-                 }
-            })
+            if(this.turboMode && e.type === "mousemove" || !this.turboMode && e.type === "click") {
+                coords.innerText = `Screen X/Y: ${e.screenX} ${e.screenY}`
+                this.enemy1.forEach(elem => {
+                    if (elem.enemy1Pos.x < e.clientX &&
+                        elem.enemy1Pos.x + elem.enemy1Size.w > e.clientX &&
+                        elem.enemy1Pos.y < e.clientY &&
+                        elem.enemy1Size.h + elem.enemy1Pos.y > e.clientY) {
+                        elem.enemy1Lives--
+                    }
+                })
 
-            this.enemy2.forEach(elem => {
-                if (elem.enemy2Pos.x < e.clientX &&
-                    elem.enemy2Pos.x + elem.enemy2Size.w > e.clientX &&
-                    elem.enemy2Pos.y < e.clientY &&
-                    elem.enemy2Size.h + elem.enemy2Pos.y > e.clientY) {
-                    elem.enemy2Lives--
-                 }
-            })   
+                this.enemy2.forEach(elem => {
+                    if (elem.enemy2Pos.x < e.clientX &&
+                        elem.enemy2Pos.x + elem.enemy2Size.w > e.clientX &&
+                        elem.enemy2Pos.y < e.clientY &&
+                        elem.enemy2Size.h + elem.enemy2Pos.y > e.clientY) {
+                        elem.enemy2Lives--
+                    }
+                })
+
+                this.bonus.forEach(elem => {
+                    if (elem.bonusPos.x < e.clientX &&
+                        elem.bonusPos.x + elem.bonusSize.w > e.clientX &&
+                        elem.bonusPos.y < e.clientY &&
+                        elem.bonusSize.h + elem.bonusPos.y > e.clientY) {
+                        elem.bonusLives--
+                    }
+                })
+            }
+               
         }  
         document.addEventListener("click", logKey)
+        document.addEventListener("mousemove", logKey)
     },
 
     loseLives() {
@@ -175,33 +259,57 @@ const shootingGame = {
            
        })) {
             this.lives -= 2
-        }  
+        } 
+        
+        if (this.bonus.some(elem => {
+            return elem.bonusPos.x >= elem.gameSize.w
+        })) {
+            this.lives -= 1
+        }
+
+
     },
 
     enemy1Score() {
         document.querySelector(".score span").innerHTML = this.score
-        this.enemy1.forEach(elem => {
-            if (elem.enemy1Lives === 0) {
-                this.score += 1
-                elem.dead = true
-            }
-        })
+
+        if (this.turboMode === false) {
+            this.enemy1.forEach(elem => {
+                if (elem.enemy1Lives <= 0) {
+                    this.score += 1
+                    elem.dead = true
+                }
+            })
+        }
+        
     },
 
     enemy2Score() {
         document.querySelector(".score span").innerHTML = this.score
-        this.enemy2.forEach(elem => {
-            if (elem.enemy2Lives === 0) {
-                this.score += 2
-                elem.dead = true
-            }
-        })
+
+        if (this.turboMode === false) {
+            this.enemy2.forEach(elem => {
+                if (elem.enemy2Lives <= 0) {
+                    this.score += 2
+                    elem.dead = true
+                }
+            })
+        }
+        
     },
 
-    gameOver() {
-        if (this.lives === 0) {
-            window.location.href = "gameover.html"
-        }
+    totalScore() {
+        
+    },
+
+    gameOver() { 
+        document.querySelector(".total-score span").innerHTML = this.score + this.turboScore
+
+
+        document.querySelector(".game-div").style.display = "none"
+        document.querySelector(".main").style.display = "flex"
+
+
     },
 
     
@@ -216,5 +324,6 @@ const shootingGame = {
     clearEnemies() {
         this.enemy1 = this.enemy1.filter(elm => elm.enemy1Pos.x <= this.gameSize.w  && !elm.dead)
         this.enemy2 = this.enemy2.filter(elm => elm.enemy2Pos.x <= this.gameSize.w  && !elm.dead)
+        this.bonus = this.bonus.filter(elm => elm.bonusPos.x <= this.gameSize.w && !elm.dead)
     }
 }
