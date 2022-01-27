@@ -4,11 +4,11 @@ const shootingGame = {
     version: '1.0.0',
     license: undefined,
     canvas: document.querySelector("#myCanvas"),
-    title: document.querySelector(".main"),
     gameSize: {w: undefined, h: undefined},
     ctx: undefined,
     background: undefined,
     framesCounter: 0,
+    intervalId: undefined,
     lives: 10,
     score: 0,
     turboScore: 0,
@@ -90,7 +90,7 @@ const shootingGame = {
     // DRAW ALL (INTERVAL) /////////////////////////////////////////
 
     drawAll() {
-        setInterval(() => {
+        this.intervalId = setInterval(() => {
             this.clearAll()
             this.background.draw()
             this.createEnemy1()
@@ -362,6 +362,7 @@ const shootingGame = {
     // GAME OVER /////////////////////////////////////////
 
     gameOver() { 
+        clearInterval(this.intervalId)
         document.querySelector(".total-score span").innerHTML = this.score + this.turboScore - this.turboCounter
         document.querySelector(".game-div").style.display = "none"
         document.querySelector(".main").style.display = "flex"
