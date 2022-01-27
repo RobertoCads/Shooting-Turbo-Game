@@ -6,11 +6,10 @@ const shootingGame = {
     canvas: document.querySelector("#myCanvas"),
     title: document.querySelector(".main"),
     gameSize: {w: undefined, h: undefined},
-    cursor: document.getElementById("mouse"),
     ctx: undefined,
     background: undefined,
     framesCounter: 0,
-    lives: 5,
+    lives: 10,
     score: 0,
     turboScore: 0,
     countDown: 15,
@@ -24,6 +23,7 @@ const shootingGame = {
         this.setContext()
         this.setSize()
         this.createBackground()
+        this.changeCursor()
         this.drawAll()
         this.takeCoor()
         // this.enemy1Score()
@@ -117,8 +117,16 @@ const shootingGame = {
                 this.score += 1
             }
 
+            if (!this.turboMode && document.querySelector("canvas.active")) {
+                document.querySelector("canvas.active").className = "inactive"
+            }
+
             if (this.turboMode) {
                 this.countDownCounter++
+
+                if (document.querySelector("canvas.inactive")) {
+                    document.querySelector("canvas.inactive").className = "active"
+                }
 
                 if (this.framesCounter % 20 === 0) {
                     this.enemy1.push(new Enemy1(
@@ -310,12 +318,21 @@ const shootingGame = {
         
     },
 
+    changeCursor() {
+        document.querySelector("canvas.inactive").style.cursor = ""
+    },
+
+    turboCursor() {
+        document.querySelector("canvas.active").style.cursor = ""
+    },
+
     // GAME OVER /////////////////////////////////////////
 
     gameOver() { 
         document.querySelector(".total-score span").innerHTML = this.score + this.turboScore
         document.querySelector(".game-div").style.display = "none"
         document.querySelector(".main").style.display = "flex"
+        document.querySelector("#myCanvas").style.cursor = "none"
     },
 
     // CLEAR ENEMIES /////////////////////////////////////////

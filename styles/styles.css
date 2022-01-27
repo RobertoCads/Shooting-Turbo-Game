@@ -26,3 +26,11 @@ body {
     text-align: right;
 }
 
+#myCanvas.inactive {
+    cursor: url("../images/mirilla32px.png"), auto;
+}
+
+#myCanvas.active {
+    cursor: url("../images/machine-gun.png"), auto;
+}
+

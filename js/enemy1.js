@@ -38,7 +38,7 @@ class Enemy1 {
     }
 
     animate(framesCounter) {
-        if (framesCounter % 4 === 0) {
+        if (framesCounter % 3 === 0) {
             this.imageInstance.framesIndex++
         }
 
