@@ -31,4 +31,8 @@ class Background {
         }
         this.posX -= this.velX;
       }
+
+      updateSpeed(value) {
+        this.velX = value
+      }
 }

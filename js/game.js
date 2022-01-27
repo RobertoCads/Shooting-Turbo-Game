@@ -123,12 +123,16 @@ const shootingGame = {
             if (this.score % 20 === 0 && this.score != 0) {
                 this.turboMode = true
                 this.score += 1
+                this.audio.playbackRate = 1.25
+                this.background.updateSpeed(30)
             }
 
             // RETURN THE CURSOR TO THE INITIAL IMAGE /////////////////////////////////////////
             if (!this.turboMode && document.querySelector("canvas.active")) {
                 document.querySelector("canvas.active").className = "inactive"
                 this.turboBoolean = false
+                this.audio.playbackRate = 1
+                this.background.updateSpeed(10)
             }
 
             // TURBO MODE STARTS /////////////////////////////////////////
