@@ -12,12 +12,15 @@ const shootingGame = {
     lives: 10,
     score: 0,
     turboScore: 0,
+    turboCounter: 0,
+    turboBoolean: false,
     countDown: 15,
     countDownCounter: 0,
     enemy1: [],
     enemy2: [],
     bonus: [],
     turboMode: false,
+    audio: document.querySelector("audio"),
 
     init() {
         this.setContext()
@@ -26,9 +29,6 @@ const shootingGame = {
         this.changeCursor()
         this.drawAll()
         this.takeCoor()
-        // this.enemy1Score()
-         
-          
     },
 
     // CONTEXT AND SIZE /////////////////////////////////////////
@@ -50,6 +50,10 @@ const shootingGame = {
 
     createBackground() {
         this.background = new Background(this.ctx, this.gameSize.w, this.gameSize.h)
+    },
+
+    bgAudio() {
+        this.audio.play()
     },
 
     // ENEMIES /////////////////////////////////////////
@@ -97,6 +101,8 @@ const shootingGame = {
             if (this.lives <= 0) {
                 this.gameOver()
             }
+
+            // ENEMIES AND BONUS /////////////////////////////////////////
             
             this.enemy1.forEach(elm => {
                 elm.move()
@@ -112,21 +118,38 @@ const shootingGame = {
                 elm.draw()
             })
 
+            // AVOID LOOP ADDING 1 TO SCORE WHEN ENTERING TURBO MODE /////////////////////////////////////////
+
             if (this.score % 20 === 0 && this.score != 0) {
                 this.turboMode = true
                 this.score += 1
             }
 
+            // RETURN THE CURSOR TO THE INITIAL IMAGE /////////////////////////////////////////
             if (!this.turboMode && document.querySelector("canvas.active")) {
                 document.querySelector("canvas.active").className = "inactive"
+                this.turboBoolean = false
             }
+
+            // TURBO MODE STARTS /////////////////////////////////////////
 
             if (this.turboMode) {
                 this.countDownCounter++
 
+                if (!this.turboBoolean) {
+                    this.turboCounter++
+                    this.turboBoolean = true
+                }
+
+                
+
+                // CHANGE THE CURSOR TO THE TURBO MODE /////////////////////////////////////////
+
                 if (document.querySelector("canvas.inactive")) {
                     document.querySelector("canvas.inactive").className = "active"
                 }
+
+                // CREATE ENEMIES AND BONUS /////////////////////////////////////////
 
                 if (this.framesCounter % 20 === 0) {
                     this.enemy1.push(new Enemy1(
@@ -164,6 +187,7 @@ const shootingGame = {
                     
                 }
 
+                // KILL ENEMIES AND BONUS /////////////////////////////////////////
 
                 document.querySelector(".turbo-score span").innerHTML = this.turboScore
                 this.enemy1.forEach(elem => {
@@ -195,6 +219,8 @@ const shootingGame = {
                 })
             }
 
+            // COUNTDOWN /////////////////////////////////////////
+
             if(this.countDownCounter % 375 === 0) {
                 this.turboMode = false
                 this.countDownCounter = 0
@@ -212,6 +238,7 @@ const shootingGame = {
         
     },
 
+    // CLEAR ALL /////////////////////////////////////////
 
     clearAll() {
         this.ctx.clearRect(0, 0, this.gameSize.w, this.gameSize.h)
@@ -226,6 +253,10 @@ const shootingGame = {
         
 
         const logKey = (e) => {
+
+            this.bgAudio()
+
+            
             if(this.turboMode && e.type === "mousemove" || !this.turboMode && e.type === "click") {
                 coords.innerText = `Screen X/Y: ${e.screenX} ${e.screenY}`
                 this.enemy1.forEach(elem => {
@@ -318,6 +349,8 @@ const shootingGame = {
         
     },
 
+    // CHANGE CURSOR TO IMAGE /////////////////////////////////////////
+
     changeCursor() {
         document.querySelector("canvas.inactive").style.cursor = ""
     },
@@ -329,10 +362,12 @@ const shootingGame = {
     // GAME OVER /////////////////////////////////////////
 
     gameOver() { 
-        document.querySelector(".total-score span").innerHTML = this.score + this.turboScore
+        document.querySelector(".total-score span").innerHTML = this.score + this.turboScore - this.turboCounter
         document.querySelector(".game-div").style.display = "none"
         document.querySelector(".main").style.display = "flex"
         document.querySelector("#myCanvas").style.cursor = "none"
+        this.audio.muted = true
+        
     },
 
     // CLEAR ENEMIES /////////////////////////////////////////
